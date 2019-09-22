@@ -41,7 +41,14 @@ public class Request {
         return path;
     }
 
+    public Map<String, String> getHeaders() {
+        return headers;
+    }
+
     public String getBody() throws IOException {
-        return reader.readBody();
+        if (body == null) {
+            body = reader.readBody();
+        }
+        return body;
     }
 }
