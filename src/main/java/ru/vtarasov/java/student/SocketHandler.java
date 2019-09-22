@@ -42,11 +42,12 @@ public class SocketHandler {
             RequestHandler requestHandler = server.getMapper().getHandler(request.getPath());
             if (requestHandler == null) {
                 System.out.println("Handler not found for path " + request.getPath());
+                response.setStatus("404");
+                response.setDescription("Not Found");
+                response.writeResponse("");
                 return;
             }
             requestHandler.handle(request, response);
-
-            socket.close();
         } catch (IOException e) {
             System.out.println(e.getMessage());
         }

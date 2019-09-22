@@ -32,11 +32,20 @@ public class Server {
                 Socket socket;
                 try {
                     socket = serverSocket.accept();
-                    executorService.submit(() -> new SocketHandler(this, socket).handle());
+                    executorService.submit(() -> handleSocket(socket));
                 } catch (IOException e) {
                     System.out.println(e.getMessage());
                 }
             }
+        } catch (IOException e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
+    private void handleSocket(Socket socket) {
+        new SocketHandler(this, socket).handle();
+        try {
+            socket.close();
         } catch (IOException e) {
             System.out.println(e.getMessage());
         }
