@@ -6,4 +6,8 @@ package ru.vtarasov.java.student;
  */
 public interface RequestHandler {
     void handle(Request request, Response response) throws Exception;
+
+    default String extractIdFromPath(Request request, String path) {
+        return request.getPath().substring(request.getPath().indexOf(path) + path.length() + 1);
+    }
 }

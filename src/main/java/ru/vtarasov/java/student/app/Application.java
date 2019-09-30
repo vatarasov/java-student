@@ -1,6 +1,5 @@
 package ru.vtarasov.java.student.app;
 
-import ru.vtarasov.java.student.Server;
 import ru.vtarasov.java.student.model.StudentServer;
 
 /**

@@ -20,23 +20,21 @@ public class StudentHandler extends RequestHandlerBase {
     public static final String PATH = "/student";
 
     private final ServerContext context;
-    private final StudentRegistrationService service;
     private final ObjectMapper json;
 
     public StudentHandler(ServerContext context) {
         this.context = context;
-        this.service = context.getContainer().get(StudentRegistrationService.class);
         this.json = new ObjectMapper();
     }
 
     @Override
     protected void handleGet(Request request, Response response) throws Exception {
-        String id = getIdFromPath(request);
-        Student student = service.find(id).orElseThrow(StudentNotFoundException::new);
+        String id = extractIdFromPath(request, PATH);
+        Student student = registrationService().find(id).orElseThrow(StudentNotFoundException::new);
         String studentJson = json.writeValueAsString(student);
 
-        response.setStatus("200");
-        response.setDescription("Ok");
+        response.setStatus(Response.OK);
+        response.setDescription(Response.OK_DESCRIPTION);
         response.addHeader("Content-Type", "application/json");
         response.writeResponse(studentJson);
     }
@@ -45,37 +43,37 @@ public class StudentHandler extends RequestHandlerBase {
     protected void handlePost(Request request, Response response) throws Exception {
         String studentJson = request.getBody();
         Student student = json.readValue(studentJson, Student.class);
-        student = service.register(student);
+        student = registrationService().register(student);
 
-        response.setStatus("201");
-        response.setDescription("Created");
+        response.setStatus(Response.CREATED);
+        response.setDescription(Response.CREATED_DESCRIPTION);
         response.addHeader("Location", context.getAddress() + PATH + "/" + student.getId());
-        response.writeResponse("");
+        response.writeResponse();
     }
 
     @Override
     protected void handleDelete(Request request, Response response) throws Exception {
-        String id = getIdFromPath(request);
-        Student student = service.find(id).orElseThrow(StudentNotFoundException::new);
-        service.unregister(student);
+        String id = extractIdFromPath(request, PATH);
+        Student student = registrationService().find(id).orElseThrow(StudentNotFoundException::new);
+        registrationService().unregister(student);
 
-        response.setStatus("200");
-        response.setDescription("Ok");
-        response.writeResponse("");
+        response.setStatus(Response.OK);
+        response.setDescription(Response.OK_DESCRIPTION);
+        response.writeResponse();
     }
 
     @Override
-    protected void handleException(Request request, Response response, Exception t) throws IOException {
-        if (t instanceof StudentNotFoundException) {
-            response.setStatus("404");
-            response.setDescription("Not Found");
-            response.writeResponse("");
+    protected void handleException(Request request, Response response, Exception e) throws IOException {
+        if (e instanceof StudentNotFoundException) {
+            response.setStatus(Response.NOT_FOUND);
+            response.setDescription(Response.NOT_FOUND_DESCRIPTION);
+            response.writeResponse();
             return;
         }
-        super.handleException(request, response, t);
+        super.handleException(request, response, e);
     }
 
-    private String getIdFromPath(Request request) {
-        return request.getPath().substring(request.getPath().indexOf(PATH) + PATH.length() + 1);
+    private StudentRegistrationService registrationService() {
+        return context.getContainer().get(StudentRegistrationService.class);
     }
 }

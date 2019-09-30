@@ -12,6 +12,7 @@ import java.util.concurrent.Executors;
  */
 public abstract class Server implements ServerContext {
     private static final int PORT = 8080;
+    private static final String ADDRESS = "http://localhost:" + PORT;
 
     private static final int THREADS_COUNT = 10;
 
@@ -22,9 +23,11 @@ public abstract class Server implements ServerContext {
         init();
     }
 
+    protected abstract void init();
+
     @Override
     public String getAddress() {
-        return "http://localhost:" + PORT;
+        return ADDRESS;
     }
 
     @Override
@@ -37,8 +40,6 @@ public abstract class Server implements ServerContext {
         return serviceContainer;
     }
 
-    protected abstract void init();
-
     public void run() {
         try (ServerSocket serverSocket = new ServerSocket(PORT)) {
             ExecutorService executorService = Executors.newFixedThreadPool(THREADS_COUNT);
@@ -48,11 +49,11 @@ public abstract class Server implements ServerContext {
                     socket = serverSocket.accept();
                     executorService.submit(() -> handleSocket(socket));
                 } catch (IOException e) {
-                    System.out.println(e.getMessage());
+                    e.printStackTrace();
                 }
             }
         } catch (IOException e) {
-            System.out.println(e.getMessage());
+            e.printStackTrace();
         }
     }
 
@@ -61,7 +62,7 @@ public abstract class Server implements ServerContext {
         try {
             socket.close();
         } catch (IOException e) {
-            System.out.println(e.getMessage());
+            e.printStackTrace();
         }
     }
 }

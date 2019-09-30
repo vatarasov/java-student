@@ -9,8 +9,8 @@ import ru.vtarasov.java.student.Server;
 public class StudentServer extends Server {
     @Override
     protected void init() {
-        getContainer().register(StudentRegistrationService.class, new StudentRegistrationServiceImpl(new StudentRepositoryImpl()));
-
         getMapper().registerHandler(StudentHandler.PATH, new StudentHandler(this));
+
+        getContainer().register(StudentRegistrationService.class, new StudentRegistrationServiceImpl(new StudentRepositoryImpl()));
     }
 }

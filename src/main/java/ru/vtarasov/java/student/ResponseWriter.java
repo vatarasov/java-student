@@ -16,9 +16,9 @@ public class ResponseWriter {
         this.writer = writer;
     }
 
-    public void writeStartLine(String status, String description) throws IOException {
+    public void writeStartLine(int status, String description) throws IOException {
         writer.write("HTTP/1.1 ");
-        writer.write(status);
+        writer.write(String.valueOf(status));
         if (description != null) {
             writer.write(" ");
             writer.write(description);

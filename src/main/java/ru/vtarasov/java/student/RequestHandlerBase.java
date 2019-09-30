@@ -1,7 +1,6 @@
 package ru.vtarasov.java.student;
 
 import java.io.IOException;
-import lombok.SneakyThrows;
 
 /**
  * @author vtarasov
@@ -47,9 +46,10 @@ public class RequestHandlerBase implements RequestHandler {
 
     private void handleUnknown(Response response) throws IOException {
         System.out.println("Method not allowed");
-        response.setStatus("405");
-        response.setDescription("Method Not Allowed");
-        response.writeResponse("");
+
+        response.setStatus(Response.METHOD_NOT_ALLOWED);
+        response.setDescription(Response.METHOD_NOT_ALLOWED_DESCRIPTION);
+        response.writeResponse();
     }
 
     private void withExceptionHandling(Request request, Response response, RequestHandler handler) throws IOException {
@@ -62,10 +62,11 @@ public class RequestHandlerBase implements RequestHandler {
         }
     }
 
-    protected void handleException(Request request, Response response, Exception t) throws IOException {
-        t.printStackTrace();
-        response.setStatus("500");
-        response.setDescription("Internal Server Error");
-        response.writeResponse("");
+    protected void handleException(Request request, Response response, Exception e) throws IOException {
+        e.printStackTrace();
+
+        response.setStatus(Response.INTERNAL_SERVER_ERROR);
+        response.setDescription(Response.INTERNAL_SERVER_ERROR_DESCRIPTION);
+        response.writeResponse();
     }
 }
