@@ -13,11 +13,11 @@ import java.nio.charset.Charset;
  * @since 22.09.2019
  */
 public class SocketHandler {
-    private final Server server;
+    private final ServerContext context;
     private final Socket socket;
 
-    public SocketHandler(Server server, Socket socket) {
-        this.server = server;
+    public SocketHandler(ServerContext context, Socket socket) {
+        this.context = context;
         this.socket = socket;
     }
 
@@ -39,7 +39,7 @@ public class SocketHandler {
                 new Response(
                     new ResponseWriter(writer));
 
-            RequestHandler requestHandler = server.getMapper().getHandler(request.getPath());
+            RequestHandler requestHandler = context.getMapper().getHandler(request.getPath());
             if (requestHandler == null) {
                 System.out.println("Handler not found for path " + request.getPath());
                 response.setStatus("404");
@@ -48,8 +48,8 @@ public class SocketHandler {
                 return;
             }
             requestHandler.handle(request, response);
-        } catch (IOException e) {
-            System.out.println(e.getMessage());
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 }

@@ -10,20 +10,34 @@ import java.util.concurrent.Executors;
  * @author vtarasov
  * @since 22.09.2019
  */
-public class Server {
+public abstract class Server implements ServerContext {
     private static final int PORT = 8080;
 
     private static final int THREADS_COUNT = 10;
 
+    private final ServiceContainer serviceContainer = new ServiceContainer();
     private final RequestMapper requestMapper = new RequestMapper();
 
     public Server() {
-        requestMapper.registerHandler("/hello", new HelloRequestHandler());
+        init();
     }
 
+    @Override
+    public String getAddress() {
+        return "http://localhost:" + PORT;
+    }
+
+    @Override
     public RequestMapper getMapper() {
         return requestMapper;
     }
+
+    @Override
+    public ServiceContainer getContainer() {
+        return serviceContainer;
+    }
+
+    protected abstract void init();
 
     public void run() {
         try (ServerSocket serverSocket = new ServerSocket(PORT)) {

@@ -2,9 +2,11 @@ package ru.vtarasov.java.student;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.nio.CharBuffer;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.StringTokenizer;
+import java.util.stream.Collectors;
 
 /**
  * @author vtarasov
@@ -38,12 +40,13 @@ public class RequestReader {
 
     public String readBody() throws IOException {
         StringBuilder builder = new StringBuilder();
-        String line = null;
-        while ((line = reader.readLine())!= null) {
-            if (builder.length() != 0) {
-                builder.append("\n");
+        char[] buff = new char[1024];
+        int count;
+        while ((count = reader.read(buff)) != -1) {
+            builder.append(buff, 0, count);
+            if (!reader.ready()) {
+                break;
             }
-            builder.append(line);
         }
         return builder.toString();
     }

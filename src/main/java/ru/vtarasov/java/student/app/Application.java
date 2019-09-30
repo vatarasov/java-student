@@ -1,6 +1,7 @@
-package ru.vtarasov.java.student;
+package ru.vtarasov.java.student.app;
 
-import java.io.IOException;
+import ru.vtarasov.java.student.Server;
+import ru.vtarasov.java.student.model.StudentServer;
 
 /**
  * @author vtarasov
@@ -12,6 +13,6 @@ public class Application {
     }
 
     private void run() {
-        new Server().run();
+        new StudentServer().run();
     }
 }
